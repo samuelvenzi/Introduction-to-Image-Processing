@@ -22,7 +22,9 @@ int main(int argc, char const *argv[])
 	cv::imshow("Source", src_img);
 	cv::waitKey(10);
 	//changeRedBlue(src_img);
-	im_chscaledepth(src_img, 3, 1);
+	im_chscaledepth(src_img, 8, 0.5);
+
+	printf("after func\n");
 
 	return 0;
 }
@@ -80,23 +82,24 @@ cv::Mat im_chscaledepth(cv::Mat src_img, int depth, float scale){
 	new_x = x*scale;
 	new_y = y*scale;
 
-	if (scale > 1)
-	{	
-		cv::Mat resized_cols = cv::Mat(y, new_x, CV_8UC(3));
-		cv::Mat resized_img = cv::Mat(new_y, new_x, CV_8UC(3));
-
-
-		for (int i = 0; i < src_img.cols; ++i)
+	cv::Mat resized_cols = cv::Mat(y, new_x, CV_8UC(3));
+	cv::Mat resized_img = cv::Mat(new_y, new_x, CV_8UC(3));
+	
+	for (int i = 0; i < src_img.cols; ++i)
+	{
+		for (int j = 0; j < src_img.rows; ++j)
 		{
-			for (int j = 0; j < src_img.rows; ++j)
-			{
-				for (int k = 0; k < 3; ++k)
-				{	
-					resized_cols.at<cv::Vec3b>(j,i*scale)[k] = src_img.at<cv::Vec3b>(j,i)[k];
-				}
-			}	
-		}
-
+			for (int k = 0; k < 3; ++k)
+			{	
+				int aux_i;
+				aux_i = (int)(scale*i);
+				if (aux_i < new_x)
+					resized_cols.at<cv::Vec3b>(j,aux_i)[k] = src_img.at<cv::Vec3b>(j,i)[k];	
+			}
+		}	
+	}
+	if (scale > 1)
+	{
 		for (int i = 0; i < resized_cols.cols; ++i)
 		{
 			for (int j = 0; j < resized_cols.rows; ++j)
@@ -105,52 +108,48 @@ cv::Mat im_chscaledepth(cv::Mat src_img, int depth, float scale){
 				{	
 					if (resized_cols.at<cv::Vec3b>(j,i)[k] == 0)
 					{
-						resized_cols.at<cv::Vec3b>(j,i)[k] = resized_cols.at<cv::Vec3b>(j,i-1)[k];
+						resized_cols.at<cv::Vec3b>(j,i)[k] = resized_cols.at<cv::Vec3b>(j,i-1)[k];		
 					}
 				}
 			}	
-			cv::imshow("Scale change", resized_img);
-			cv::waitKey(10);
 		}
+	}	
 
-		for (int i = 0; i < resized_cols.rows; ++i)
+	for (int i = 0; i < resized_cols.rows; ++i)
+	{
+		for (int j = 0; j < resized_cols.cols; ++j)
 		{
-			for (int j = 0; j < resized_cols.cols; ++j)
-			{
-				for (int k = 0; k < 3; ++k)
-				{	
-					resized_img.at<cv::Vec3b>(i*scale,j)[k] = resized_cols.at<cv::Vec3b>(i,j)[k];
-				}
-			}	
+			for (int k = 0; k < 3; ++k)
+			{	
+				int aux_i;
+				aux_i = (int)(scale*i);
+				if (aux_i < new_y)
+					resized_img.at<cv::Vec3b>(aux_i,j)[k] = resized_cols.at<cv::Vec3b>(i,j)[k];
+			}
 		}
+	}
 
+	if (scale > 1)
+	{
 		for (int i = 0; i < resized_img.rows; ++i)
-		{
+		{	
+			
 			for (int j = 0; j < resized_img.cols; ++j)
 			{
 				for (int k = 0; k < 3; ++k)
 				{	
 					if (resized_img.at<cv::Vec3b>(i,j)[k] == 0)
 					{
-						resized_img.at<cv::Vec3b>(i,j)[k] = resized_img.at<cv::Vec3b>(i-1,j)[k];
+						resized_img.at<cv::Vec3b>(i,j)[k] = resized_img.at<cv::Vec3b>(i-1,j)[k];	
 					}
 				}
-			}
-			//cv::imshow("Scale change", resized_img);
-			//cv::waitKey(10);	
-			
+			}	
 		}
-
-					
-
-		cv::waitKey();
-		
-		
-		
-		
 	}
+	cv::imshow("Res", resized_img);
+	cv::waitKey();
 
 	
 
-	return proc_img;
+	return resized_img;
 }
