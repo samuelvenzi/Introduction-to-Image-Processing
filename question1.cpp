@@ -11,7 +11,7 @@ int main(int argc, char const *argv[])
 {
 	//std::cout << "Debug"; 
 
-	cv::Mat src_img;
+	cv::Mat src_img, proc_img;
 
 	src_img = cv::imread(argv[1]);
 	if (!src_img.data)
@@ -21,10 +21,11 @@ int main(int argc, char const *argv[])
 	}
 	cv::imshow("Source", src_img);
 	cv::waitKey(10);
-	//changeRedBlue(src_img);
-	im_chscaledepth(src_img, 8, 0.5);
+	//proc_img = changeRedBlue(src_img);
+	proc_img = im_chscaledepth(src_img, 1, 1.75);
 
-	printf("after func\n");
+	cv::imshow("Proc", proc_img);
+	cv::waitKey();
 
 	return 0;
 }
@@ -41,8 +42,6 @@ cv::Mat changeRedBlue(cv::Mat src_img){
 			proc_img.at<cv::Vec3b>(j,i)[2] = src_img.at<cv::Vec3b>(j,i)[0];
 		}
 	 }
-	cv::imshow("Red and Blue switching", proc_img);
-	cv::waitKey();
 
 	return proc_img;
 }
@@ -54,7 +53,6 @@ cv::Mat im_chscaledepth(cv::Mat src_img, int depth, float scale){
 
 	n_levels = pow(2,depth);
 	depth_range = 256/n_levels;
-	//std::cout << n_levels << std::endl;
 	
 	proc_img = src_img;
 
@@ -65,16 +63,12 @@ cv::Mat im_chscaledepth(cv::Mat src_img, int depth, float scale){
 			for (int k = 0; k < 3; ++k)
 			{
 				int level;
-				//std::cout << level << std::endl;
 				level = proc_img.at<cv::Vec3b>(j,i)[k]/depth_range;
 				proc_img.at<cv::Vec3b>(j,i)[k] = level*(255/(n_levels-1));
 			}
 		}
 	}
-
-	//cv::imshow("Brightness depth", proc_img);
-	//cv::waitKey();
-
+	printf("1\n");
 	int n_cols, n_rows, x, y, new_x, new_y;
 	
 	x = src_img.cols;
@@ -84,7 +78,7 @@ cv::Mat im_chscaledepth(cv::Mat src_img, int depth, float scale){
 
 	cv::Mat resized_cols = cv::Mat(y, new_x, CV_8UC(3));
 	cv::Mat resized_img = cv::Mat(new_y, new_x, CV_8UC(3));
-	
+	printf("2\n");
 	for (int i = 0; i < src_img.cols; ++i)
 	{
 		for (int j = 0; j < src_img.rows; ++j)
@@ -94,26 +88,39 @@ cv::Mat im_chscaledepth(cv::Mat src_img, int depth, float scale){
 				int aux_i;
 				aux_i = (int)(scale*i);
 				if (aux_i < new_x)
-					resized_cols.at<cv::Vec3b>(j,aux_i)[k] = src_img.at<cv::Vec3b>(j,i)[k];	
+					resized_cols.at<cv::Vec3b>(j,aux_i)[k] = proc_img.at<cv::Vec3b>(j,i)[k];	
 			}
 		}	
 	}
+	printf("3\n");
 	if (scale > 1)
 	{
 		for (int i = 0; i < resized_cols.cols; ++i)
 		{
+			int sum = 0;
 			for (int j = 0; j < resized_cols.rows; ++j)
 			{
+				
+				for (int lines = 0; lines < resized_cols.rows; ++lines)
+				{
+					sum += resized_cols.at<cv::Vec3b>(lines,i)[0];
+				}
 				for (int k = 0; k < 3; ++k)
 				{	
-					if (resized_cols.at<cv::Vec3b>(j,i)[k] == 0)
+					
+					if (sum == 0)
 					{
-						resized_cols.at<cv::Vec3b>(j,i)[k] = resized_cols.at<cv::Vec3b>(j,i-1)[k];		
+						resized_cols.at<cv::Vec3b>(j,i)[k] = resized_cols.at<cv::Vec3b>(j,i-1)[k];	
+						printf("%d\n", j);	
 					}
 				}
-			}	
+			}
+			cv::imshow("", resized_cols);
+			cv::waitKey(100);	
 		}
-	}	
+	}
+
+	printf("4\n");
 
 	for (int i = 0; i < resized_cols.rows; ++i)
 	{
@@ -128,7 +135,7 @@ cv::Mat im_chscaledepth(cv::Mat src_img, int depth, float scale){
 			}
 		}
 	}
-
+	printf("5\n");
 	if (scale > 1)
 	{
 		for (int i = 0; i < resized_img.rows; ++i)
@@ -138,18 +145,24 @@ cv::Mat im_chscaledepth(cv::Mat src_img, int depth, float scale){
 			{
 				for (int k = 0; k < 3; ++k)
 				{	
-					if (resized_img.at<cv::Vec3b>(i,j)[k] == 0)
+					int sum = 0;
+					for (int num = 0; num < resized_cols.rows; ++num)
 					{
-						resized_img.at<cv::Vec3b>(i,j)[k] = resized_img.at<cv::Vec3b>(i-1,j)[k];	
+						sum += resized_cols.at<cv::Vec3b>(j,num)[k];
+					}
+					if (sum == 0)
+					{
+						resized_img.at<cv::Vec3b>(i,j)[k] = resized_cols.at<cv::Vec3b>(i-1,j)[k];	
 					}
 				}
 			}	
 		}
 	}
+	printf("6\n");
 	cv::imshow("Res", resized_img);
 	cv::waitKey();
 
-	
+	printf("7\n");
 
 	return resized_img;
 }
