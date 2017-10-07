@@ -21,8 +21,8 @@ int main(int argc, char const *argv[])
 	}
 	cv::imshow("Source", src_img);
 	cv::waitKey(10);
-	proc_img = changeRedBlue(src_img);
-	//proc_img = im_chscaledepth(src_img, 3, 1.75);
+	//proc_img = changeRedBlue(src_img);
+	proc_img = im_chscaledepth(src_img, 5, 0.5);
 
 	cv::imshow("Proc", proc_img);
 	cv::waitKey();

@@ -6,7 +6,7 @@
 
 int main(int argc, char const *argv[])
 {
-	cv::Mat src_img, proc_img;
+	cv::Mat src_img, proc_img, proc_img_int;
 
 	src_img = cv::imread(argv[1]);
 	if (!src_img.data)
@@ -31,7 +31,9 @@ int main(int argc, char const *argv[])
 
 	//cv::Laplacian(src_img, proc_img, 8);
 
-	cv::filter2D(src_img, proc_img, -1, kernel);
+	cv::GaussianBlur(src_img, proc_img_int, cv::Size(3,3), 1);
+
+	cv::filter2D(proc_img_int, proc_img, -1, kernel);
 
 	cv::imshow("Laplacian", proc_img);
 	cv::waitKey();
