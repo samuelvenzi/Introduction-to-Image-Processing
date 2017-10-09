@@ -1,3 +1,7 @@
+Aluno: Samuel Venzi Lima Moneiro de Oliveira
+Matricula: 14/0162241
+
+
 Diretivas de compilacao
 
 Compilar as questoes 1 e 2 com o arquivo build_all.sh
