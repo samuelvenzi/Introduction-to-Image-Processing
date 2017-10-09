@@ -1,3 +1,6 @@
+// Aluno: Samuel Venzi Lima Moneiro de Oliveira
+// Matricula: 14/0162241
+
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/highgui/highgui.hpp"
 #include <iostream>
@@ -17,7 +20,7 @@ int main(int argc, char const *argv[])
 
 	cv::Mat kernel;
 	
-	kernel = (cv::Mat_<float>(3,3) << 
+	kernel = (cv::Mat_<float>(3,3) << //definicao do kernel
         -1,  -1, -1,
         -1, 8, -1,
         -1,  -1, -1);
@@ -29,9 +32,7 @@ int main(int argc, char const *argv[])
 	cv::waitKey(10);
 
 
-	//cv::Laplacian(src_img, proc_img, 8);
-
-	cv::GaussianBlur(src_img, proc_img_int, cv::Size(3,3), 1);
+	cv::GaussianBlur(src_img, proc_img_int, cv::Size(3,3), 1); //aplicacao dos filtros
 
 	cv::filter2D(proc_img_int, proc_img, -1, kernel);
 

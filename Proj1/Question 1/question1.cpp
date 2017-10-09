@@ -1,3 +1,6 @@
+// Aluno: Samuel Venzi Lima Moneiro de Oliveira
+// Matricula: 14/0162241
+
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/highgui/highgui.hpp"
 #include <iostream>
@@ -38,7 +41,7 @@ cv::Mat changeRedBlue(cv::Mat src_img){
 	{
 	 	for (int j = 0; j < src_img.rows; ++j)
 		{
-			proc_img.at<cv::Vec3b>(j,i)[0] = src_img.at<cv::Vec3b>(j,i)[2];
+			proc_img.at<cv::Vec3b>(j,i)[0] = src_img.at<cv::Vec3b>(j,i)[2];    //troca das componentes
 			proc_img.at<cv::Vec3b>(j,i)[2] = src_img.at<cv::Vec3b>(j,i)[0];
 		}
 	 }
@@ -63,7 +66,7 @@ cv::Mat im_chscaledepth(cv::Mat src_img, int depth, float scale){
 			for (int k = 0; k < 3; ++k)
 			{
 				int level;
-				level = proc_img.at<cv::Vec3b>(j,i)[k]/depth_range;
+				level = proc_img.at<cv::Vec3b>(j,i)[k]/depth_range;       //mudanca de niveis de brilho
 				proc_img.at<cv::Vec3b>(j,i)[k] = level*(255/(n_levels-1));
 			}
 		}
@@ -84,7 +87,7 @@ cv::Mat im_chscaledepth(cv::Mat src_img, int depth, float scale){
 		for (int j = 0; j < src_img.rows; ++j)
 		{
 			for (int k = 0; k < 3; ++k)
-			{	
+			{														//redimensionamento
 				int aux_i;
 				aux_i = (int)(scale*i);
 				if (aux_i < new_x)

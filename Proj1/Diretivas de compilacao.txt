@@ -1,0 +1,6 @@
+Diretivas de compilacao
+
+Compilar as questoes 1 e 2 com o arquivo build_all.sh
+basta dar no diretorio do arquivo: sh build_all.sh
+
+Compilar a questao 3 com o comando make no diretorio do makefile

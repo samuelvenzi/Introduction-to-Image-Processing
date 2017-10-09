@@ -1,3 +1,6 @@
+// Aluno: Samuel Venzi Lima Moneiro de Oliveira
+// Matricula: 14/0162241
+
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/highgui/highgui.hpp"
 #include <iostream>
