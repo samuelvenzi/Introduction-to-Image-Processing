@@ -1,6 +1,6 @@
 src = imread('cookies.tif');
-
-bin_img = im2bw(src, 0.4)
+figure, imshow(src);
+bin_img = im2bw(src, 0.3)
 figure, imshow(bin_img);
 SE = strel('disk',60, 0)
 IM = imerode(bin_img,SE)
